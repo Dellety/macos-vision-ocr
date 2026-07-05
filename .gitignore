@@ -2,6 +2,9 @@
 .build/
 .swiftpm/
 
+# Test fixtures & outputs (local only)
+test/
+
 # macOS
 .DS_Store
 
