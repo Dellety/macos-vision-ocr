@@ -9,28 +9,13 @@ description: Drive the `ocr` CLI (macOS Vision framework) to extract text from i
 
 ## Prerequisites
 
-`ocr` must be installed and on `PATH`. Verify first:
+`ocr` is assumed installed and on `PATH`. Requires macOS 10.15+ (13+ recommended for auto language detection).
 
-```bash
-command -v ocr >/dev/null 2>&1 && ocr --help >/dev/null 2>&1 && echo "INSTALLED" || echo "NOT_INSTALLED"
-```
-
-If `NOT_INSTALLED`, install via the curl one-liner (no Homebrew needed):
+If a run fails with "command not found", point the user at the install script:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Dellety/macos-vision-ocr/main/install.sh | bash
 ```
-
-Or build from source:
-
-```bash
-git clone https://github.com/Dellety/macos-vision-ocr.git
-cd macos-vision-ocr
-swift build -c release --arch arm64   # Apple Silicon; use --arch x86_64 on Intel
-cp .build/release/ocr /usr/local/bin/ocr
-```
-
-Requires macOS 10.15+ (13+ recommended for auto language detection).
 
 ## Core usage
 
