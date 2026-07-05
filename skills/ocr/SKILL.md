@@ -12,7 +12,7 @@ description: Extract text from images using the `ocr` CLI (macOS Vision framewor
 `ocr` must be installed and on `PATH`. Verify first:
 
 ```bash
-command -v ocr && ocr --version 2>/dev/null || echo "NOT_INSTALLED"
+command -v ocr >/dev/null 2>&1 && ocr --help >/dev/null 2>&1 && echo "INSTALLED" || echo "NOT_INSTALLED"
 ```
 
 If `NOT_INSTALLED`, install via the curl one-liner (no Homebrew needed):
