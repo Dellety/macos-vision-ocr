@@ -1,6 +1,6 @@
 ---
 name: ocr
-description: Extract text from images using the `ocr` CLI (macOS Vision framework). Use whenever the user wants to read text from an image, screenshot, photo, scan, or document image — e.g. "what does this say", "extract the text", "OCR this", "read this screenshot", "识别图片文字", "截图里写了什么", "把图片转成文字", "读一下这张图". Triggers on any mention of OCR, text recognition, or reading/extracting text from image files (png, jpg, jpeg, webp).
+description: Drive the `ocr` CLI (macOS Vision framework) to extract text from images. NOT a default OCR tool — the agent already has its own multimodal vision or MCP for reading images, so use those first. Only invoke this skill when the user explicitly mentions `ocr` by name (e.g. "用 ocr 识别", "run ocr on this", "ocr this image", "ocr --json", "ocr 批量处理"). Do NOT trigger on generic "识别图片文字 / extract text / what does this say" requests unless `ocr` is named.
 ---
 
 # OCR — Extract Text from Images
