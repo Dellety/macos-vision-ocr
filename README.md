@@ -157,7 +157,8 @@ console.log(json.observations);
 ## Uninstall
 
 ```bash
-rm /usr/local/bin/ocr
+curl -fsSL https://raw.githubusercontent.com/Dellety/macos-vision-ocr/main/uninstall.sh | bash
+# or: rm /usr/local/bin/ocr
 rm -rf ~/.agents/skills/ocr   # remove the skill too, if installed
 ```
 

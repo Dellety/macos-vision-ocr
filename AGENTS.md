@@ -19,6 +19,7 @@
 Sources/ocr.swift        # 全部源码（单文件）
 Package.swift            # SPM 配置
 install.sh               # curl 一键安装脚本
+uninstall.sh             # curl 一键卸载脚本
 skills/ocr/SKILL.md      # 跨 agent 复用的 skill 描述
 .zcode-plugin/plugin.json# ZCode 插件清单
 .github/workflows/release.yml # 发布 CI
@@ -81,3 +82,4 @@ ocr [<input-files> ...] [options]
   - 将 `CLAUDE.md` 改写为本 `AGENTS.md`（zcode 风格）
   - 改造为可跨 agent（zcode / reasonix / pi）安装的 skill 插件
   - 重写 README，安装说明仅给出 agent 安装提示词
+  - 新增 `uninstall.sh`（与 install.sh 对称的卸载脚本）
