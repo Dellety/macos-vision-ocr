@@ -5,83 +5,41 @@ description: Drive the `ocr` CLI (macOS Vision framework) to extract text from i
 
 # OCR — Extract Text from Images
 
-`ocr` is a macOS command-line tool that extracts text from images using Apple's Vision framework. It auto-detects languages (including CJK) and outputs plain text by default.
+`ocr` extracts text from images via Apple's Vision framework. Auto-detects languages (including CJK) on macOS 13+; outputs plain text by default. Supports JPG / JPEG / PNG / WEBP.
 
-## Prerequisites
-
-`ocr` is assumed installed and on `PATH`. Requires macOS 10.15+ (13+ recommended for auto language detection).
-
-If a run fails with "command not found", point the user at the install script:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Dellety/macos-vision-ocr/main/install.sh | bash
-```
+Assumed installed on `PATH` (macOS 10.15+). If a run reports "command not found", point the user at: `curl -fsSL https://raw.githubusercontent.com/Dellety/macos-vision-ocr/main/install.sh | bash`.
 
 ## Core usage
 
-### Plain text (default)
-
 ```bash
-ocr <image-path>
+ocr image.png                       # plain text (default)
+ocr a.png b.jpg c.webp              # multiple images
+ocr --json image.png                # JSON with positions/confidence
+ocr screenshot.png | pbcopy         # pipe-friendly
 ```
 
-Most common case — pass a path, get text back.
-
-### Multiple images
-
-```bash
-ocr image1.png image2.jpg image3.webp
-```
-
-### JSON with position data
-
-Use `--json` when the user needs bounding boxes, confidence scores, or structured data:
-
-```bash
-ocr --json <image-path>
-```
-
-### Pipe-friendly
-
-```bash
-ocr screenshot.png | pbcopy          # copy to clipboard
-ocr receipt.jpg | grep "Total"       # search results
-ocr document.png >> notes.txt        # append
-```
-
-## When to use each flag
+## Flags
 
 | Scenario | Command |
 |---|---|
-| Just the text | `ocr image.png` |
+| Plain text | `ocr image.png` |
 | Coordinates / positions | `ocr --json image.png` |
-| Save results to a directory | `ocr image.png --output ./results` |
-| A folder of images | `ocr --img-dir ./images --output-dir ./output` |
-| Merge many images into one text file | `ocr --img-dir ./images --output-dir ./output --merge` |
-| Visualize where text was detected | `ocr --debug image.png` |
-| Auto-detection gives poor results (rare) | `ocr --rec-langs "zh-Hans, ja-JP" image.png` |
+| Save to a directory | `ocr image.png --output ./results` |
+| Batch a folder | `ocr --img-dir ./images --output-dir ./output` |
+| Merge batch into one file | `ocr --img-dir ./images --output-dir ./output --merge` |
+| Draw bounding boxes | `ocr --debug image.png` |
+| Override auto-detection (rare) | `ocr --rec-langs "zh-Hans, ja-JP" image.png` |
 | List supported languages | `ocr --lang` |
 
-## Language detection
+`--rec-langs` is rarely needed — auto-detection covers English, French, Italian, German, Spanish, Portuguese, Chinese (Simplified/Traditional), Cantonese, Korean, Japanese, Russian, Ukrainian, Thai, Vietnamese. Run `ocr --lang` for the live list.
 
-Auto-detected on macOS 13+. Specify `--rec-langs` only if auto-detection underperforms (uncommon). Supported: English, French, Italian, German, Spanish, Portuguese (Brazil), Chinese (Simplified/Traditional), Cantonese (Simplified/Traditional), Korean, Japanese, Russian, Ukrainian, Thai, Vietnamese.
-
-## Supported formats
-
-JPG, JPEG, PNG, WEBP.
-
-## JSON output format
+## JSON output
 
 Keys are sorted alphabetically (`info`, `observations`, `texts`):
 
 ```json
 {
-  "info": {
-    "filename": "handwriting.webp",
-    "filepath": "/abs/path/to/handwriting.webp",
-    "height": 720,
-    "width": 1600
-  },
+  "info": { "filename": "x.png", "filepath": "/abs/path/x.png", "height": 720, "width": 1600 },
   "observations": [
     {
       "confidence": 0.95,
@@ -98,21 +56,4 @@ Keys are sorted alphabetically (`info`, `observations`, `texts`):
 }
 ```
 
-`quad` coordinates are normalized 0–1, with origin at the **top-left** of the image (y already flipped from Vision's bottom-left convention).
-
-## Example workflows
-
-**Screenshot → text:**
-```bash
-ocr /path/to/screenshot.png
-```
-
-**Digitize a folder of scans into one file:**
-```bash
-ocr --img-dir ./scans --output-dir ./text-output --merge
-```
-
-**Programmatic use (JSON):**
-```bash
-ocr --json photo.jpg
-```
+`quad` coordinates are normalized 0–1, origin at the **top-left** (y already flipped from Vision's bottom-left convention).
