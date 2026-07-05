@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO="maoxiaoke/macos-vision-ocr"
+REPO="Dellety/macos-vision-ocr"
 INSTALL_DIR="/usr/local/bin"
 BINARY_NAME="ocr"
 

@@ -52,12 +52,6 @@ struct MacOSVisionOCR: ParsableCommand {
         return REVISION
     }
     
-    private func isEmptyBox(_ box: VNRectangleObservation) -> Bool {
-        let width = box.topRight.x - box.topLeft.x
-        let height = box.topLeft.y - box.bottomLeft.y
-        return width * height == 0
-    }
-    
     private func extractSubBounds(imageRef: CGImage, observation: VNRecognizedTextObservation, recognizedText: VNRecognizedText, positionalJson: inout [[String: Any]]) {
         func normalizeCoordinate(_ value: CGFloat) -> CGFloat {
             return max(0, min(1, value))
@@ -96,15 +90,20 @@ struct MacOSVisionOCR: ParsableCommand {
     }
     
     private func getSupportedLanguages() -> [String] {
+        let fallback: [String] = [
+            "en-US", "fr-FR", "it-IT", "de-DE", "es-ES", "pt-BR",
+            "zh-Hans", "zh-Hant", "yue-Hans", "yue-Hant",
+            "ko-KR", "ja-JP", "ru-RU", "uk-UA", "th-TH", "vi-VN"
+        ]
         if #available(macOS 13, *) {
             let request = VNRecognizeTextRequest()
             do {
                 return try request.supportedRecognitionLanguages()
             } catch {
-                return ["zh-Hans", "zh-Hant", "en-US", "ja-JP"]
+                return fallback
             }
         } else {
-            return ["zh-Hans", "zh-Hant", "en-US", "ja-JP"]
+            return fallback
         }
     }
     
@@ -259,23 +258,29 @@ struct MacOSVisionOCR: ParsableCommand {
 
         let combinedFullText = fullText.joined(separator: "\n")
 
-        let fileManager = FileManager.default
-        let absolutePath = (fileManager.currentDirectoryPath as NSString).appendingPathComponent(imagePath)
+        // 输出用户传入的原始路径：绝对路径原样返回，相对路径解析为绝对路径
+        let resolvedPath: String
+        if (imagePath as NSString).isAbsolutePath {
+            resolvedPath = imagePath
+        } else {
+            let cwd = FileManager.default.currentDirectoryPath
+            resolvedPath = (cwd as NSString).appendingPathComponent(imagePath)
+        }
 
         let info: [String: Any] = [
             "filename": (imagePath as NSString).lastPathComponent,
-            "filepath": absolutePath,
+            "filepath": resolvedPath,
             "width": cgImage.width,
             "height": cgImage.height
         ]
 
         let result: [String: Any] = [
+            "texts": combinedFullText,
             "info": info,
-            "observations": positionalJson,
-            "texts": combinedFullText
+            "observations": positionalJson
         ]
 
-        let jsonData = try JSONSerialization.data(withJSONObject: result, options: .prettyPrinted)
+        let jsonData = try JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys])
         let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
         return OCRResult(text: combinedFullText, json: jsonString)
     }

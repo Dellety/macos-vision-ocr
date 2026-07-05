@@ -1,0 +1,8 @@
+{
+  "name": "ocr",
+  "version": "1.2.0",
+  "description": "通过 macOS Vision 框架从图片中提取文本。提供 ocr 命令行工具，支持纯文本/JSON 输出、批量处理、调试可视化。",
+  "author": { "name": "Dellety" },
+  "license": "MIT",
+  "skills": "skills"
+}

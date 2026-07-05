@@ -1,11 +1,13 @@
-node_modules
-*.log
-dist
-.cache
-playground
-.idea
+# Swift / SPM build artifacts
+.build/
+.swiftpm/
+
+# macOS
 .DS_Store
-.eslintcache
-.build
-.vscode
-Package.resolved
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
